@@ -113,26 +113,31 @@ class model_page :
             st.image(url, width=300)
 
         with row1_2:
+            more_url = info_speaker['More'].values[0]
+            print(more_url)
             st.header(' ')
             st.text(' ')
             st.text(' ')
-            st.text(
-                f"Name: {info_speaker['Name'].values[0]} "
-                )
+            
             st.text(
              f"Percentage of Identification: {'%.2f' % (perc_pred*100)}%"
              )
             st.text(
-                f"Nationality: "
+                f"Speaker: {info_speaker['Name'].values[0]} "
+                )
+            st.text(
+                f"For More Info: "
             )
-            st.text(f" ")
-            # st.text(
-            #     f"Birthday: "
-            # )
+            # st.text(f" ")
+            # more_info = {info_speaker['More'].values[0]}
             # desc_1 = f"""
-            # <a href="https://www.w3schools.com/">More Info!</a> """
+            # <a href= >More Info </a> """
             # st.write(desc_1, unsafe_allow_html=True)
-            model_page.voiceprints()
+            w_val = 265
+            if info_speaker['Name'].values[0] == 'Driouche Adnane': 
+                w_val = 295
+            st.image(more_url, width= w_val)
+            # model_page.voiceprints()
 
     @staticmethod 
     def DL_page(box): 
@@ -145,7 +150,7 @@ class model_page :
     @staticmethod 
     def ML_page(box):
         
-        actors_me = pd.read_csv("Speakers Info\\ravdess_support.csv")
+        actors_me = pd.read_csv("Speakers Info\\25_actors.csv")
         if box == 'MFCC-SVM' : 
             perc_pred, id_speakers  = SVM_Process.predict_svm()
             print(type(id_speakers[0]))
