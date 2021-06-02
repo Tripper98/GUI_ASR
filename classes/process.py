@@ -1,8 +1,11 @@
+
+import cv2
 import pickle
 import numpy as np 
 from os import stat
 import librosa as lb
 import tensorflow as tf 
+from scipy import signal
 from scipy.stats import skew
 from scipy.fftpack import fft
 from tensorflow.keras.models import load_model
@@ -10,8 +13,8 @@ from tensorflow.keras.models import load_model
 # ['Adnane_Driouche', 'Benjamin_Netanyau', 'Jens_Stoltenberg', 'Julia_Gillard', 'Magaret_Tarcher', 'Nelson_Mandela']
 
 
-SPEAKERS_DICT = {0: 'DRIOUCHE Adnane', 1: 'Benjamin Netanyau', 2:'Jens Stoltenberg' ,
-                 3 : 'Julia Gillard', 4: 'Magaret Tarcher', 5: 'Nelson Mandela'}
+SPEAKERS_DICT = {0: 'Driouche Adnane', 1:'Jens Stoltenberg' ,
+                 2 : 'Julia Gillard', 3: 'Magaret Tarcher', 4: 'Nelson Mandela'}
 
 class FFT_Process():
 
@@ -46,15 +49,60 @@ class FFT_Process():
 
     @staticmethod
     def get_prediction(path, sr = 16000):
-        model = load_model('Models/DL_models/sr_ravdess&me_fft.h5')
+        model = load_model('Models\DL_models\SR_FFT_RavdessMe.h5')
         input_test = FFT_Process.preprocess(path, sr =sr)
         prediction = model.predict(input_test)
         perc_pred = max(prediction[0])
         id_speakers = prediction.argmax(axis = 1)
 
-        return round(perc_pred,2), SPEAKERS_DICT[id_speakers[0]]
-    
+        return perc_pred, SPEAKERS_DICT[id_speakers[0]]
+
+
+class CNN_Process():
+    @staticmethod
+    def read_audio(path, sr =16000):
+        ''' It returns samples and sample rate from a given audio's path '''
+        return lb.load(path, sr)
+
+    @staticmethod
+    def log_specgram(path, sample_rate=16000, window_size=20, step_size=10, eps=1e-10):
+        ''' It returns logarithm of spectrogram values from a given audio's path '''
+        audio, sample_rate = CNN_Process.read_audio(path, sr = sample_rate)
+        nperseg = int(round(window_size * sample_rate / 1e3))
+        noverlap = int(round(step_size * sample_rate / 1e3))
+        freqs, times, spec = signal.spectrogram(audio,
+                                        fs=sample_rate,
+                                        window='hann',
+                                        nperseg=nperseg,
+                                        noverlap=noverlap,
+                                        detrend=False)
+        return freqs, times, np.log(spec.T.astype(np.float32) + eps)
+
+    @staticmethod 
+    def preprocess():
+        # get spectrogram as grayscale
+        _,_,img_test = CNN_Process.log_specgram('output.wav')
+        print(img_test.shape)   
+        # resize image
+        resized_test = cv2.resize(img_test.T, (32,32), interpolation = cv2.INTER_AREA)
+        print(resized_test)
+        # To gray scale
+        gray_test = cv2.cvtColor(resized_test, cv2.COLOR_BGR2GRAY)
+
+        gray_test = np.reshape(gray_test,(-1,32,32,1))
+        return gray_test
+
+    @staticmethod
+    def get_prediction():
+        model = load_model('Models\DL_models\sr_ravdess&me_cnn.h5')
+        input_test = CNN_Process.preprocess()
+        prediction = model.predict(input_test)
+        perc_pred = max(prediction[0])
+        id_speakers = prediction.argmax(axis = 1)
+
+        return perc_pred, SPEAKERS_DICT[id_speakers[0]]  
  
+
 class SVM_Process():
     
     @staticmethod
@@ -113,4 +161,3 @@ class GNB_Process():
         id_speaker, percentage = model.predict(x_test), max(model.predict_proba(x_test)[0])
         return percentage, id_speaker
 
-# class CNN_Process():

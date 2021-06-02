@@ -3,7 +3,7 @@ import pandas as pd
 import seaborn as sns
 import streamlit as st 
 from matplotlib.figure import Figure
-from classes.process import FFT_Process, GNB_Process, SVM_Process
+from classes.process import CNN_Process, FFT_Process, GNB_Process, SVM_Process
 
 
 
@@ -142,10 +142,14 @@ class model_page :
     @staticmethod 
     def DL_page(box): 
         if box == "FFT-Conv1D" : 
+            speakers_5 = pd.read_csv("Speakers Info\\5_speakers.csv")
             perc_pred, id_speakers  = FFT_Process.get_prediction('output.wav')
-            model_page.show_speaker(perc_pred, id_speakers)
+            info_speaker= speakers_5.loc[speakers_5['Name']== id_speakers]
+            print(info_speaker)
+            model_page.show_speaker(info_speaker, perc_pred)
         else : 
-            st.write('# waiiiiit §')
+            perc_pred, id_speakers  = CNN_Process.get_prediction()
+            st.write(perc_pred, id_speakers)
 
     @staticmethod 
     def ML_page(box):
