@@ -92,10 +92,13 @@ class CNN_Process():
         img_test = cv2.imread('output.png', cv2.IMREAD_UNCHANGED)
         # resize image
         resized_test = cv2.resize(img_test, (32,32), interpolation = cv2.INTER_AREA)
-                
         # To gray scale
         gray_test = cv2.cvtColor(resized_test, cv2.COLOR_BGR2GRAY)
-
+        gray_test = np.reshape(gray_test,(-1,32,32))
+        nsamples, nx, ny = gray_test.shape
+        reshaped_gray_test = gray_test.reshape((nsamples,nx*ny))
+        scaler_loaded = pickle.load(open('Models\DL_models\scaler_cnn.pkl', 'rb'))
+        gray_test = scaler_loaded.transform(reshaped_gray_test)
         gray_test = np.reshape(gray_test,(-1,32,32,1))
         return gray_test
 

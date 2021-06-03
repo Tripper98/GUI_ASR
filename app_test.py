@@ -72,7 +72,7 @@ with st.sidebar.beta_expander("🔊 Voice Activity Detection "):
     if vad_type == "Spectrogram" :
             named_colorscales = px.colors.named_colorscales()
             default_ix = named_colorscales.index('turbo')
-            colours= st.selectbox(('Choose a colour'), named_colorscales, index=default_ix)
+            colours_vad= st.selectbox(('Choose a colour'), named_colorscales, index=default_ix)
     vad_button = st.button("Detect")
 
 # # Handling the noise
