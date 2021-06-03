@@ -8,6 +8,7 @@ import tensorflow as tf
 from scipy import signal
 from scipy.stats import skew
 from scipy.fftpack import fft
+import matplotlib.pyplot as plt
 from tensorflow.keras.models import load_model
 
 # ['Adnane_Driouche', 'Benjamin_Netanyau', 'Jens_Stoltenberg', 'Julia_Gillard', 'Magaret_Tarcher', 'Nelson_Mandela']
@@ -78,14 +79,20 @@ class CNN_Process():
                                         detrend=False)
         return freqs, times, np.log(spec.T.astype(np.float32) + eps)
 
+    @staticmethod
+    def spec_to_image():
+        _,_,spectrogram = CNN_Process.log_specgram('output.wav')
+        plt.imshow(spectrogram.T, aspect='auto', origin='lower', interpolation='nearest')
+        plt.axis('off')
+        plt.savefig('output.png', bbox_inches='tight', pad_inches=0)
+
     @staticmethod 
     def preprocess():
-        # get spectrogram as grayscale
-        _,_,img_test = CNN_Process.log_specgram('output.wav')
-        print(img_test.shape)   
+        CNN_Process.spec_to_image()
+        img_test = cv2.imread('output.png', cv2.IMREAD_UNCHANGED)
         # resize image
-        resized_test = cv2.resize(img_test.T, (32,32), interpolation = cv2.INTER_AREA)
-        print(resized_test)
+        resized_test = cv2.resize(img_test, (32,32), interpolation = cv2.INTER_AREA)
+                
         # To gray scale
         gray_test = cv2.cvtColor(resized_test, cv2.COLOR_BGR2GRAY)
 
@@ -98,9 +105,9 @@ class CNN_Process():
         input_test = CNN_Process.preprocess()
         prediction = model.predict(input_test)
         perc_pred = max(prediction[0])
-        id_speakers = prediction.argmax(axis = 1)
+        id_speaker = prediction.argmax(axis = 1)
 
-        return perc_pred, SPEAKERS_DICT[id_speakers[0]]  
+        return perc_pred, id_speaker
  
 
 class SVM_Process():

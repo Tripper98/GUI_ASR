@@ -105,8 +105,6 @@ class model_page :
             (1, .05, 1, .00000001))
         with row1_1:
             url = info_speaker['Image'].values[0]
-            print(' Debugging ...')
-            print(url)
             st.subheader('Speaker Info')
             # st.write('### Speaker Info')
             st.subheader(' ')
@@ -114,7 +112,6 @@ class model_page :
 
         with row1_2:
             more_url = info_speaker['More'].values[0]
-            print(more_url)
             st.header(' ')
             st.text(' ')
             st.text(' ')
@@ -148,8 +145,12 @@ class model_page :
             print(info_speaker)
             model_page.show_speaker(info_speaker, perc_pred)
         else : 
-            perc_pred, id_speakers  = CNN_Process.get_prediction()
-            st.write(perc_pred, id_speakers)
+            actors_me = pd.read_csv("Speakers Info\\25_actors.csv")
+            perc_pred, id_speaker  = CNN_Process.get_prediction()
+            print(id_speaker)
+            info_speaker= actors_me.loc[actors_me['Id'] == id_speaker[0]+1]
+            print(info_speaker)
+            model_page.show_speaker(info_speaker, perc_pred)
 
     @staticmethod 
     def ML_page(box):
@@ -157,8 +158,6 @@ class model_page :
         actors_me = pd.read_csv("Speakers Info\\25_actors.csv")
         if box == 'MFCC-SVM' : 
             perc_pred, id_speakers  = SVM_Process.predict_svm()
-            print(type(id_speakers[0]))
-            print(int(id_speakers[0]))
             info_speaker= actors_me.loc[actors_me['Id']== id_speakers[0]]
             model_page.show_speaker(info_speaker, perc_pred)
         else : 
