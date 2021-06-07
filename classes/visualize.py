@@ -2,11 +2,14 @@ import plotly
 import numpy as np
 import pandas as pd
 import librosa as lb
+import seaborn as sns
 import streamlit as st
 from scipy import signal
 import plotly.express as px
 import plotly.graph_objs as go
-from plotly.graph_objs import *
+from plotly.graph_objs import Data
+from plotly.graph_objs import Figure as fg
+from matplotlib.figure import Figure
 
 class Visualize : 
 
@@ -48,7 +51,6 @@ class Visualize :
         'frequency': audio,
         })
         df_audio = df_audio.rename(columns={'time':'index'}).set_index('index')  
-        # col1, col2 = st.beta_columns([3, 1])
         st.line_chart(df_audio, height=180)
 
 
@@ -72,7 +74,7 @@ class Visualize :
             "yaxis" : {"title" : {"text": "Frequency"}}
         }
 
-        fig = Figure(data=data, layout=layout)
+        fig = fg(data=data, layout=layout)
         st.plotly_chart(fig)
 
     @staticmethod
@@ -94,3 +96,82 @@ class Visualize :
             # st.subheader('Oscillogram of original audio')
             Visualize.plot_oscillogram('output.wav')
             return Visualize.plot_oscillogram(X_audio=X_audio, Y_audio=Y_audio)
+
+    @staticmethod
+    def spectrum():
+        '''
+        This function returns an ay dist for the desired wr
+        '''
+
+        audio, sr = Visualize.read_audio('output.wav', sr = 16000)
+        x_s= np.linspace(0, audio.shape[0]/sr, audio.shape[0])
+        df_audio  = pd.DataFrame(
+        {'time': x_s,
+        'frequency': audio,
+        })
+
+        fourier_transform = np.fft.rfft(audio)
+
+        abs_fourier_transform = np.abs(fourier_transform)
+
+        power_spectrum = np.square(abs_fourier_transform)
+
+        frequency = np.linspace(0, sr/2, len(power_spectrum))
+
+        fig1 = Figure()
+        ax = fig1.subplots()
+        sns.lineplot(x=frequency[:int(sr/4)], y=power_spectrum[:int(sr/4)], ax = ax, linewidth=0.2)
+        ax.legend()
+        ax.set_ylabel('Power', fontsize=12)
+        ax.set_xlabel('Frequency', fontsize=12)
+        ax.grid(zorder=0,alpha=.2)
+        st.pyplot(fig1) 
+
+    @staticmethod
+    def oscillogram():
+        '''
+        This function returns an ay dist for the desired wr
+        '''
+
+        audio, sr = Visualize.read_audio('output.wav', sr = 16000)
+        x_s= np.linspace(0, audio.shape[0]/sr, audio.shape[0])
+        df_audio  = pd.DataFrame(
+        {'time': x_s,
+        'frequency': audio,
+        })
+
+        fig2 = Figure()
+        ax2 = fig2.subplots()
+        sns.lineplot(data=df_audio, x="time", y="frequency", ax = ax2, color='red', linewidth=0.2)
+        ax2.set_ylabel('Amplitude', fontsize=12)
+        ax2.set_xlabel('Seconds', fontsize=12)
+        ax2.grid(zorder=0,alpha=.2)
+        st.pyplot(fig2) 
+
+    @staticmethod 
+    def spectrogram():
+        audio, sr = Visualize.read_audio('output.wav', sr = 16000)
+        freqs,times,spec = Visualize.log_specgram(audio= audio, sample_rate= sr)
+
+        fig3 = Figure()
+        ax3 = fig3.subplots()
+        ax3.imshow(spec.T, aspect='auto', origin='lower', 
+                extent=[times.min(), times.max(), freqs.min(), freqs.max()])
+        ax3.set_ylabel('Freqs in Hz', fontsize=12)
+        ax3.set_xlabel('Seconds', fontsize=12)
+        st.pyplot(fig3)
+
+    @staticmethod
+    def acoustic_char():
+        st.write(' ')
+        st.write('# Acoustic Characteristics')
+        row2_1, row2_2= st.beta_columns(2)
+        with row2_1 : 
+            st.subheader('Oscillogram of Audio')
+            Visualize.oscillogram()
+        with row2_2: 
+            st.subheader('Spectrogram of Audio')
+            Visualize.spectrogram()
+        
+        st.subheader('Spectrum of Audio')
+        Visualize.spectrum()
