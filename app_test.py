@@ -1,4 +1,5 @@
 from os import X_OK
+from pages.test_page import test_page
 from pages.noise_page import noise_page
 import librosa as lb
 import streamlit as st
@@ -105,6 +106,10 @@ with st.sidebar.beta_expander("🚀 Testing The Model"):
          )
     model_button = st.button("Identify")
 
+# Handling the noise
+with st.sidebar.beta_expander("Test Code party"):
+    test_button = st.button("Test")
+
 print(model_button)
 
 if model_button :
@@ -115,6 +120,8 @@ elif vis_button :
     visualization_page.show(vis_selectbox, colours = colours)
 elif noise_button :
     noise_page.show(noise_selectbox)
+elif test_button: 
+    test_page.show()
 else: 
     Home.show()
 

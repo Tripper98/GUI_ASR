@@ -1,3 +1,4 @@
+from classes.visualize import Visualize
 from classes.reduce_noise import Handling_Noise
 import streamlit as st 
 
@@ -41,3 +42,5 @@ class noise_page :
     def show(noise_selectbox):
         noise_page.intro()
         Handling_Noise.reduce_noise(noise_selectbox)
+        Visualize.plot_oscillogram('output.wav')
+        Visualize.plot_oscillogram('non_noise.wav')
