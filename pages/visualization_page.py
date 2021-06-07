@@ -2,7 +2,7 @@ import streamlit as st
 import plotly.express as px
 from classes.visualize import Visualize
 
-class Visualization : 
+class visualization_page : 
     @staticmethod
     def intro():
         page_icon = "https://user-images.githubusercontent.com/46791116/119490544-dd24a180-bd54-11eb-88dd-a9432f197615.png"
@@ -40,7 +40,7 @@ class Visualization :
 
     @staticmethod
     def show(type_of_plot, colours = None):
-        Visualization.intro()
+        visualization_page.intro()
         if type_of_plot == "Spectrogram":
             Visualize.plot_spectrogram(colours, path = 'output.wav')
         else:

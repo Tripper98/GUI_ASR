@@ -1,4 +1,5 @@
 from os import X_OK
+from pages.noise_page import noise_page
 import librosa as lb
 import streamlit as st
 import plotly.express as px
@@ -7,7 +8,7 @@ from pages.vad_page import vad_page
 from pages.home_page import Home
 from pages.model_page import model_page
 from pages.params_page import Params
-from pages.visualization_page import Visualization
+from pages.visualization_page import visualization_page
 
 # Vars 
 params_button = False
@@ -75,13 +76,13 @@ with st.sidebar.beta_expander("🔊 Voice Activity Detection "):
             colours_vad= st.selectbox(('Choose a colour'), named_colorscales, index=default_ix)
     vad_button = st.button("Detect")
 
-# # Handling the noise
-# with st.sidebar.beta_expander("🎧 Reducing the noise "):
-#     vad_selectbox = st.selectbox(
-#         "",
-#         ("method1", "method2")
-#     )
-#     vad_button = st.button("Reduce")
+# Handling the noise
+with st.sidebar.beta_expander("🔇 Reducing the Noise "):
+    noise_selectbox = st.selectbox(
+        "",
+        ("VisuShrink", "BayesShrink")
+    )
+    noise_button = st.button("Reduce")
 
 
 # Testing the model 
@@ -111,7 +112,9 @@ if model_button :
 elif vad_button : 
     vad_page.show(vad_selectbox,threshold, vad_type, colours= colours_vad)
 elif vis_button : 
-    Visualization.show(vis_selectbox, colours = colours)
+    visualization_page.show(vis_selectbox, colours = colours)
+elif noise_button :
+    noise_page.show(noise_selectbox)
 else: 
     Home.show()
 
