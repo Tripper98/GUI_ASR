@@ -1,3 +1,4 @@
+from classes.visualize import Visualize
 import time
 import pandas as pd
 import seaborn as sns
@@ -105,8 +106,8 @@ class model_page :
             (1, .05, 1, .00000001))
         with row1_1:
             url = info_speaker['Image'].values[0]
-            st.subheader('Speaker Info')
-            # st.write('### Speaker Info')
+            # st.subheader('Speaker Info')
+            st.write('# Speaker Info')
             st.subheader(' ')
             st.image(url, width=300)
 
@@ -172,3 +173,4 @@ class model_page :
             model_page.ML_page(model_selectbox)
         else : 
             model_page.DL_page(model_selectbox)  
+        Visualize.acoustic_char()

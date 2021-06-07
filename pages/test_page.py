@@ -41,17 +41,11 @@ class test_page :
 
         fig1 = Figure()
         ax = fig1.subplots()
-        sns.lineplot(x=frequency[:1000], y=power_spectrum[:1000], ax = ax)
-        # sns.kdeplot(data=df['air_yards'], color='#CCCCCC',
-        #                 fill=True, label='NFL Average',ax=ax)
-        # sns.kdeplot(data=receiver['air_yards'], color=COLORS.get(team),
-        #                 fill=True, label=player,ax=ax)
+        sns.lineplot(x=frequency[:int(sr/4)], y=power_spectrum[:int(sr/4)], ax = ax)
         ax.legend()
-        ax.set_xlabel('Air Yards', fontsize=12)
-        ax.set_ylabel('Density', fontsize=12)
+        ax.set_ylabel('Power', fontsize=12)
+        ax.set_xlabel('Frequency', fontsize=12)
         ax.grid(zorder=0,alpha=.2)
-        # ax.set_axisbelow(True)
-        # ax.set_ylim([0,16e4])
         st.pyplot(fig1) 
 
     @staticmethod
@@ -66,24 +60,13 @@ class test_page :
         {'time': x_s,
         'frequency': audio,
         })
-        
-
-        # receiver=df.loc[(df.receiver==player) & (df.posteam==team) &
-        #                 (df.week>= start_week) & (df.week<= stop_week)]
 
         fig2 = Figure()
         ax2 = fig2.subplots()
         sns.lineplot(data=df_audio, x="time", y="frequency", ax = ax2, color='red', linewidth=0.2)
-        # sns.kdeplot(data=df['air_yards'], color='#CCCCCC',
-        #                 fill=True, label='NFL Average',ax=ax)
-        # sns.kdeplot(data=receiver['air_yards'], color=COLORS.get(team),
-        #                 fill=True, label=player,ax=ax)
-        ax2.legend()
-        ax2.set_xlabel('Air Yards', fontsize=12)
-        ax2.set_ylabel('Density', fontsize=12)
+        ax2.set_ylabel('Amplitude', fontsize=12)
+        ax2.set_xlabel('Seconds', fontsize=12)
         ax2.grid(zorder=0,alpha=.2)
-        # ax.set_axisbelow(True)
-        # ax.set_xlim([-10,55])
         st.pyplot(fig2) 
 
     @staticmethod 
@@ -105,13 +88,13 @@ class test_page :
         st.write('')
         row2_1, row2_2= st.beta_columns(2)
         with row2_1 : 
-            st.subheader('Air Yards Distribution')
+            st.subheader('Oscillogram of Audio')
             test_page.oscillogram()
         with row2_2: 
-            st.subheader('Air Yards Distribution')
+            st.subheader('Spectrogram of Audio')
             test_page.spectrogram()
         
-        st.subheader('Air Yards Distribution')
+        st.subheader('Spectrum of Audio')
         test_page.spectrum()
 
 

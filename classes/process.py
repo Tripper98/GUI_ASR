@@ -4,6 +4,7 @@ import pickle
 import numpy as np 
 from os import stat
 import librosa as lb
+from numpy.core.fromnumeric import sort
 import tensorflow as tf 
 from scipy import signal
 from scipy.stats import skew
@@ -155,6 +156,13 @@ class SVM_Process():
         model = pickle.load(file)
         file.close()
         x_test = SVM_Process.process_svm()
+        original_proba = model.predict_proba(x_test)
+        test_proba = sort(original_proba)
+        print(np.where(original_proba==test_proba[0][-1]))
+        print('Testing Proba')
+        print(test_proba[0][-2])
+        print(np.where(original_proba==test_proba[0][-2]))
+        # print(test_proba.argwhere(test_proba[0][-2]))
         id_speaker, percentage = model.predict(x_test), max(model.predict_proba(x_test)[0])
         return percentage, id_speaker
 

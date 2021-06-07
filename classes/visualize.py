@@ -118,12 +118,12 @@ class Visualize :
 
         frequency = np.linspace(0, sr/2, len(power_spectrum))
 
-        fig1 = Figure()
+        fig1 = Figure(figsize=(5, 2))
         ax = fig1.subplots()
         sns.lineplot(x=frequency[:int(sr/4)], y=power_spectrum[:int(sr/4)], ax = ax, linewidth=0.2)
         ax.legend()
-        ax.set_ylabel('Power', fontsize=12)
-        ax.set_xlabel('Frequency', fontsize=12)
+        ax.set_ylabel('Power', fontsize= 8)
+        ax.set_xlabel('Frequency', fontsize= 8)
         ax.grid(zorder=0,alpha=.2)
         st.pyplot(fig1) 
 
