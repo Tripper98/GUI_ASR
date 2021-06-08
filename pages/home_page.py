@@ -62,7 +62,8 @@ class Home :
         1. ⚙️ Set parameters & Record (or upload) your audio.
         2. 📊 Visualize your audio.
         3. 🔊 Detect speech regions & non speech regions from your original audio.
-        4. 🚀 Identify the speaker and their gender.
+        3. 🔇 Reduce The Noise.
+        4. 🚀 Choose a model & Identify the speaker.
 
         </details>
 
