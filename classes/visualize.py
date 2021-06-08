@@ -164,7 +164,7 @@ class Visualize :
     @staticmethod
     def acoustic_char():
         st.write(' ')
-        st.write('# Acoustic Characteristics')
+        st.write('# 📊 Acoustic Characteristics')
         row2_1, row2_2= st.beta_columns(2)
         with row2_1 : 
             st.subheader('Oscillogram of Audio')

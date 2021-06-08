@@ -108,10 +108,14 @@ class CNN_Process():
         model = load_model('Models\DL_models\sr_ravdess&me_cnn.h5')
         input_test = CNN_Process.preprocess()
         prediction = model.predict(input_test)
+        original_proba = model.predict(input_test)
+        test_proba = sort(original_proba)
+        perc_pred_2 = test_proba[0][-2] 
+        id_speaker_2 = np.where(original_proba==test_proba[0][-2])[1]
         perc_pred = max(prediction[0])
         id_speaker = prediction.argmax(axis = 1)
 
-        return perc_pred, id_speaker
+        return perc_pred, id_speaker, perc_pred_2, id_speaker_2
  
 
 class SVM_Process():
@@ -158,14 +162,10 @@ class SVM_Process():
         x_test = SVM_Process.process_svm()
         original_proba = model.predict_proba(x_test)
         test_proba = sort(original_proba)
-        print(np.where(original_proba==test_proba[0][-1]))
-        print('Testing Proba')
-        print(test_proba[0][-2])
-        print(np.where(original_proba==test_proba[0][-2]))
-        # print(test_proba.argwhere(test_proba[0][-2]))
+        perc_pred_2 = test_proba[0][-2] 
+        id_speaker_2 = np.where(original_proba==test_proba[0][-2])[1]
         id_speaker, percentage = model.predict(x_test), max(model.predict_proba(x_test)[0])
-        return percentage, id_speaker
-
+        return percentage, id_speaker, perc_pred_2, id_speaker_2
 
 
 class GNB_Process():
@@ -176,6 +176,11 @@ class GNB_Process():
         model = pickle.load(file)
         file.close()
         x_test = SVM_Process.process_svm()
+        original_proba = model.predict_proba(x_test)
+        test_proba = sort(original_proba)
+        perc_pred_2 = test_proba[0][-2] 
+        id_speaker_2 = np.where(original_proba==test_proba[0][-2])[1]
         id_speaker, percentage = model.predict(x_test), max(model.predict_proba(x_test)[0])
-        return percentage, id_speaker
+        return percentage, id_speaker, perc_pred_2, id_speaker_2
+
 

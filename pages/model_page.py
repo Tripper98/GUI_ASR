@@ -107,7 +107,7 @@ class model_page :
         with row1_1:
             url = info_speaker['Image'].values[0]
             # st.subheader('Speaker Info')
-            st.write('# Speaker Info')
+            st.write('# 📌 Speaker Info')
             st.subheader(' ')
             st.image(url, width=300)
 
@@ -126,16 +126,43 @@ class model_page :
             st.text(
                 f"For More Info: "
             )
-            # st.text(f" ")
-            # more_info = {info_speaker['More'].values[0]}
-            # desc_1 = f"""
-            # <a href= >More Info </a> """
-            # st.write(desc_1, unsafe_allow_html=True)
             w_val = 265
             if info_speaker['Name'].values[0] == 'Driouche Adnane': 
                 w_val = 295
             st.image(more_url, width= w_val)
-            # model_page.voiceprints()
+
+
+    @staticmethod
+    def show_speaker_2(info_speaker, perc_pred): 
+        
+        row1_1, row1_space2, row1_2, row1_space3 = st.beta_columns(
+            (1, .05, 1, .00000001))
+
+        with row1_1:
+            more_url = info_speaker['More'].values[0]
+            
+            st.write('# 📌 Simliar To ')
+            st.text(' ')
+            # st.text(
+            #  f"Percentage of Identification: {'%.2f' % (perc_pred*100)}%"
+            #  )
+            st.text(
+                f"Speaker: {info_speaker['Name'].values[0]} "
+                )
+            st.text(
+                f"For More Info: "
+            )
+            w_val = 265
+            if info_speaker['Name'].values[0] == 'Driouche Adnane': 
+                w_val = 295
+            st.image(more_url, width= w_val)
+
+        with row1_2:
+            url = info_speaker['Image'].values[0]
+            st.header(' ')
+            st.subheader(' ')
+            st.text(' ')
+            st.image(url, width=300)
 
     @staticmethod 
     def DL_page(box): 
@@ -147,24 +174,30 @@ class model_page :
             model_page.show_speaker(info_speaker, perc_pred)
         else : 
             actors_me = pd.read_csv("Speakers Info\\25_actors.csv")
-            perc_pred, id_speaker  = CNN_Process.get_prediction()
-            print(id_speaker)
+            perc_pred, id_speaker, perc_pred_2, id_speaker_2  = CNN_Process.get_prediction()
             info_speaker= actors_me.loc[actors_me['Id'] == id_speaker[0]+1]
-            print(info_speaker)
+            info_speaker_2 = actors_me.loc[actors_me['Id']== id_speaker_2[0]+1]
             model_page.show_speaker(info_speaker, perc_pred)
+            model_page.show_speaker_2(info_speaker_2, perc_pred_2)
 
     @staticmethod 
     def ML_page(box):
         
         actors_me = pd.read_csv("Speakers Info\\25_actors.csv")
         if box == 'MFCC-SVM' : 
-            perc_pred, id_speakers  = SVM_Process.predict_svm()
+            perc_pred, id_speakers, perc_pred_2, id_speaker_2  = SVM_Process.predict_svm()  # 
             info_speaker= actors_me.loc[actors_me['Id']== id_speakers[0]]
+            info_speaker_2 = actors_me.loc[actors_me['Id']== id_speaker_2[0]]
+            # print(perc_pred_2)
+            # print(f'Info ID : {info_speaker_2}')
             model_page.show_speaker(info_speaker, perc_pred)
+            model_page.show_speaker_2(info_speaker_2, perc_pred_2)
         else : 
-            perc_pred, id_speakers  = GNB_Process.predict_gnb()
+            perc_pred, id_speakers, perc_pred_2, id_speaker_2 = GNB_Process.predict_gnb()
             info_speaker= actors_me.loc[actors_me['Id'] == id_speakers[0]]
+            info_speaker_2 = actors_me.loc[actors_me['Id']== id_speaker_2[0]]
             model_page.show_speaker(info_speaker, perc_pred)
+            model_page.show_speaker_2(info_speaker_2, perc_pred_2)
 
     @staticmethod
     def show(approach_selectbox, model_selectbox):
