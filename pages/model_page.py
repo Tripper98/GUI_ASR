@@ -165,18 +165,25 @@ class model_page :
             st.image(url, width=300)
 
     @staticmethod 
-    def DL_page(box): 
+    def DL_page(box, model_radio): 
+        if model_radio == 'RAVDESS' : 
+            df_path = "Speakers Info\\25_actors.csv"
+            add_one = 1
+        else : 
+            df_path = "Speakers Info\\youtube_speakers.csv"
+            add_one = 0
+
         if box == "FFT-Conv1D" : 
-            speakers_5 = pd.read_csv("Speakers Info\\5_speakers.csv")
+            speakers_5 = pd.read_csv(df_path)
             perc_pred, id_speakers  = FFT_Process.get_prediction('output.wav')
             info_speaker= speakers_5.loc[speakers_5['Name']== id_speakers]
             print(info_speaker)
             model_page.show_speaker(info_speaker, perc_pred)
         else : 
-            actors_me = pd.read_csv("Speakers Info\\25_actors.csv")
-            perc_pred, id_speaker, perc_pred_2, id_speaker_2  = CNN_Process.get_prediction()
-            info_speaker= actors_me.loc[actors_me['Id'] == id_speaker[0]+1]
-            info_speaker_2 = actors_me.loc[actors_me['Id']== id_speaker_2[0]+1]
+            actors_me = pd.read_csv(df_path)
+            perc_pred, id_speaker, perc_pred_2, id_speaker_2  = CNN_Process.get_prediction(model_radio)
+            info_speaker= actors_me.loc[actors_me['Id'] == id_speaker[0]+add_one]
+            info_speaker_2 = actors_me.loc[actors_me['Id']== id_speaker_2[0]+add_one]
             model_page.show_speaker(info_speaker, perc_pred)
             model_page.show_speaker_2(info_speaker_2, perc_pred_2)
 
@@ -200,10 +207,10 @@ class model_page :
             model_page.show_speaker_2(info_speaker_2, perc_pred_2)
 
     @staticmethod
-    def show(approach_selectbox, model_selectbox):
+    def show(approach_selectbox, model_selectbox, model_radio):
         model_page.intro_speaker()
         if approach_selectbox == 'Machine Learning':
             model_page.ML_page(model_selectbox)
         else : 
-            model_page.DL_page(model_selectbox)  
+            model_page.DL_page(model_selectbox, model_radio)  
         Visualize.acoustic_char()

@@ -88,7 +88,7 @@ with st.sidebar.beta_expander("🔇 Reducing the Noise "):
 
 # Testing the model 
 with st.sidebar.beta_expander("🚀 Testing The Model"):
-    # model_radio = st.radio("",("Speaker Recognition", "Gender Recognition", "Both"))
+    model_radio = st.radio("Choose Data",("RAVDESS", "HDFASR"))
     # st.title("Choose the model")
     approach_selectbox = st.selectbox(
         "Choose the Approach",
@@ -113,7 +113,7 @@ with st.sidebar.beta_expander("Test Code party"):
 print(model_button)
 
 if model_button :
-    model_page.show(approach_selectbox, model_selectbox)
+    model_page.show(approach_selectbox, model_selectbox, model_radio)
 elif vad_button : 
     vad_page.show(vad_selectbox,threshold, vad_type, colours= colours_vad)
 elif vis_button : 

@@ -88,7 +88,12 @@ class CNN_Process():
         plt.savefig('output.png', bbox_inches='tight', pad_inches=0)
 
     @staticmethod 
-    def preprocess():
+    def preprocess(model_radio):
+        if model_radio == 'RAVDESS' : 
+            scaler_path = 'Models\DL_models\scaler_cnn.pkl'
+        else : 
+            scaler_path = 'Models\DL_models\scaler_cnn_youtube.pkl'
+
         CNN_Process.spec_to_image()
         img_test = cv2.imread('output.png', cv2.IMREAD_UNCHANGED)
         # resize image
@@ -98,15 +103,20 @@ class CNN_Process():
         gray_test = np.reshape(gray_test,(-1,32,32))
         nsamples, nx, ny = gray_test.shape
         reshaped_gray_test = gray_test.reshape((nsamples,nx*ny))
-        scaler_loaded = pickle.load(open('Models\DL_models\scaler_cnn.pkl', 'rb'))
+        scaler_loaded = pickle.load(open(scaler_path, 'rb'))
         gray_test = scaler_loaded.transform(reshaped_gray_test)
         gray_test = np.reshape(gray_test,(-1,32,32,1))
         return gray_test
 
     @staticmethod
-    def get_prediction():
-        model = load_model('Models\DL_models\sr_ravdess&me_cnn.h5')
-        input_test = CNN_Process.preprocess()
+    def get_prediction(model_radio):
+        if model_radio == 'RAVDESS' : 
+            model_path = "Models\DL_models\sr_ravdess&me_cnn.h5"
+        else : 
+            model_path = "Models\DL_models\sr_youtube_cnn.h5"
+
+        model = load_model(model_path)
+        input_test = CNN_Process.preprocess(model_path)
         prediction = model.predict(input_test)
         original_proba = model.predict(input_test)
         test_proba = sort(original_proba)
@@ -114,7 +124,7 @@ class CNN_Process():
         id_speaker_2 = np.where(original_proba==test_proba[0][-2])[1]
         perc_pred = max(prediction[0])
         id_speaker = prediction.argmax(axis = 1)
-
+        print(id_speaker)
         return perc_pred, id_speaker, perc_pred_2, id_speaker_2
  
 
