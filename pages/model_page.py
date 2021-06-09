@@ -143,9 +143,9 @@ class model_page :
             
             st.write('# 📌 Simliar To ')
             st.text(' ')
-            # st.text(
-            #  f"Percentage of Identification: {'%.2f' % (perc_pred*100)}%"
-            #  )
+            st.text(
+             f"Percentage of Identification: {'%.2f' % (perc_pred*100)}%"
+             )
             st.text(
                 f"Speaker: {info_speaker['Name'].values[0]} "
                 )
