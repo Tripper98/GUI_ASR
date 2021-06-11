@@ -44,3 +44,4 @@ class noise_page :
         Handling_Noise.reduce_noise(noise_selectbox)
         Visualize.plot_oscillogram('output.wav')
         Visualize.plot_oscillogram('non_noise.wav')
+        Visualize.reduce_noise()

@@ -162,6 +162,41 @@ class Visualize :
         st.pyplot(fig3)
 
     @staticmethod
+    def reduce_noise():
+        '''
+        This function returns an ay dist for the desired wr
+        '''
+
+        audio, sr = Visualize.read_audio('output.wav', sr = 16000)
+        audio_noisy, _ = Visualize.read_audio('non_noise.wav', sr = 16000)
+        x_s= np.linspace(0, audio.shape[0]/sr, audio.shape[0])
+        x_noise= np.linspace(0, audio_noisy.shape[0]/sr, audio_noisy.shape[0])
+        df_audio  = pd.DataFrame(
+        {'time': x_s,
+        'frequency': audio,
+        })
+
+        df_noisy_audio  = pd.DataFrame(
+        {'time': x_noise,
+        'frequency': audio_noisy,
+        })
+
+        # df = pd.DataFrame(
+        # {'Original': audio,
+        # 'Without Noise': audio_noisy
+        # })
+        # p = sns.lineplot(data = df)
+        fig2 = Figure(figsize=(5, 2))
+        ax2 = fig2.subplots()
+        # sns.lineplot(data=df, ax=ax2)
+        sns.lineplot(data=df_noisy_audio, x="time", y="frequency", ax = ax2, color='blue',  linewidth=0.4)
+        sns.lineplot(data=df_audio, x="time", y="frequency", ax = ax2, color='red', linewidth=0.1)
+        ax2.set_ylabel('Amplitude', fontsize= 8)
+        ax2.set_xlabel('Seconds', fontsize= 8)
+        ax2.grid(zorder=0,alpha=.2)
+        st.pyplot(fig2)
+
+    @staticmethod
     def acoustic_char():
         st.write(' ')
         st.write('# 📊 Acoustic Characteristics')
